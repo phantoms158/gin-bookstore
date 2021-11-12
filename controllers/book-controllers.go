@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/phantoms158/gin-bookstore/databases"
 	"github.com/phantoms158/gin-bookstore/models"
@@ -11,6 +13,12 @@ import (
 // GET /books
 // Get all books
 func FindBooks(c *gin.Context) {
+	claims, exists := c.Get("user_data")
+	if !exists {
+		c.JSON(http.StatusOK, gin.H{"data": exists})
+	}
+	user_data := claims.(jwt.MapClaims)
+	fmt.Printf("Key: %v \n", user_data["name"].(string))
 	var books []models.Book
 	databases.DB.Find(&books)
 
